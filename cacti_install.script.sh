@@ -5,10 +5,10 @@ MAIN_PATH="/var/www/html/cacti"
 MYSQL_PATH="/usr/bin/mysql"
 mysqlrootpwd="abcABC123$$$"
 
+apt-get update
+
 # install "lamp-server"
 sudo apt-get install lamp-server^ -y
-
-apt-get update
 apt-get install php-xml php-simplexml php-mbstring php-ldap php-gmp php-gd php-snmp rrdtool freetype* -y
 
 # sudo cat /etc/timezone
@@ -21,11 +21,16 @@ git clone https://github.com/Cacti/cacti.git
 # for latest "release"
 # wget https://www.cacti.net/downloads/cacti-1.2.0.tar.gz
 # mkdir cacti && tar xvzf cacti-1.2.0.tar.gz -C cacti --strip-components 1
+# backup
+mkdir cacti_backups_tmp/
+cp /var/www/html/cacti/cacti.sql /tmp/cacti_backups_tmp/cacti.sql.bak
+cp /var/www/html/cacti/include/config.php /tmp/cacti_backups_tmp/config.php.bak
+cp /var/www/html/cacti/include/global.php /tmp/cacti_backups_tmp/global.php.bak
 rm /var/www/html/cacti -rf
 mv ./cacti /var/www/html/
-cp /var/www/html/cacti/cacti.sql /var/www/html/cacti/cacti.sql.bak
-cp /var/www/html/cacti/include/config.php /var/www/html/cacti/include/config.php.bak
-cp /var/www/html/cacti/include/global.php /var/www/html/cacti/include/global.php.bak
+# cp /tmp/cacti_backups_tmp/cacti.sql.bak /var/www/html/cacti/cacti.sql
+# cp /tmp/cacti_backups_tmp/config.php.bak /var/www/html/cacti/include/config.php
+# cp /tmp/cacti_backups_tmp/global.php.bak /var/www/html/cacti/include/global.php 
 
 useradd cacti
 echo "cacti:cacti" | chpasswd
@@ -33,6 +38,7 @@ echo "cacti:cacti" | chpasswd
 sudo groupadd cacti
 usermod -a -G cacti cacti
 
+# pre populate your time zone data in to the database, avoids error later
 /usr/bin/mysql -u root -pabcABC123$$$ mysql < /usr/share/mysql/mysql_test_data_timezone.sql
 
 /usr/bin/mysql -u root -pabcABC123$$$ -e "drop database cacti;"
@@ -51,6 +57,7 @@ usermod -a -G cacti cacti
 # php /var/www/html/cacti/cli/repair_database.php --force
 
 #blank os config file from github
+#if upgrading (un)comment this out
 cp /var/www/html/cacti/include/config.php.dist /var/www/html/cacti/include/config.php
 
 # /var/www/html/cacti/include/config.php
