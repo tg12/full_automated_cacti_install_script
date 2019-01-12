@@ -54,6 +54,8 @@ usermod -a -G cacti cacti
 
 /usr/bin/mysql -u root -pabcABC123$$$ cacti < /var/www/html/cacti/cacti.sql
 
+/usr/bin/mysql -u root -pabcABC123$$$ cacti < "ALTER DATABASE cacti CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+
 # php /var/www/html/cacti/cli/repair_database.php --force
 
 #blank os config file from github
